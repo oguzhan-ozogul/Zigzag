@@ -11,12 +11,12 @@ public class GroundSpawner : MonoBehaviour
     {
         for (int i = 0; i < 15; i++)
         {
-            groundSpawn();
+            GroundSpawn();
             
         }
     }
-
-    public void groundSpawn()
+    //Zeminlerin spawlanma kodu
+    public void GroundSpawn()
     {
         Vector3 _direction;
         if(Random.Range(0,2) == 0)
@@ -29,8 +29,6 @@ public class GroundSpawner : MonoBehaviour
             _direction = Vector3.forward;
         }
         lastGround = Instantiate(lastGround, lastGround.transform.position + _direction, lastGround.transform.rotation,transform.parent);
-        
-        
     }
 
 }

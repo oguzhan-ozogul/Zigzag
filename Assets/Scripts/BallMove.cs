@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class BallMove : MonoBehaviour
 {
     Vector3 direction;
@@ -9,11 +10,18 @@ public class BallMove : MonoBehaviour
     public GroundSpawner groundSpawner;
     public static bool fall;
     public float speedUpgrade;
+    public AudioClip touchSound;
+    public AudioClip diamondSound;
+    
+    
+
 
     private void Start()
     {
         direction = Vector3.forward;
         fall = false;
+        
+        
     }
 
     public void Update()
@@ -24,34 +32,41 @@ public class BallMove : MonoBehaviour
     private void FixedUpdate()
     {
     }
+    //Arkadaki zeminlerin top üstünden geçtikten sonra düşmesi
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Ground")
         {
             collision.gameObject.AddComponent<Rigidbody>();
-            groundSpawner.groundSpawn();
+            groundSpawner.GroundSpawn();
             StartCoroutine(groundDelete(collision.gameObject));
         }
     }
+    //düşen zeminlerin 2 saniye sonra destroylanması
     IEnumerator groundDelete(GameObject DeleteGround)
     {
         yield return new WaitForSeconds(2f);
         Destroy(DeleteGround);
     }
 
+    //top zeminin altına indiğinde direk ölmesi
     public void DeathState()
     {
-        if (transform.position.y <= 0.5f)
+        if (transform.position.y <= -0.2f)
         {
             fall = true;
+            
+
         }
         if (fall == true)
         {
             GameManager.Instance.CurrentGameState = GameManager.GameState.Gameover;
+            
             return;
         }
     }
 
+    //Topun tıkladığında yönü ve hareketi
     public void PlayerMovement()
     {
         if (Input.GetMouseButtonDown(0))
@@ -66,6 +81,7 @@ public class BallMove : MonoBehaviour
             }
             speed += speedUpgrade * Time.deltaTime;
             GameManager.Instance.UpdateScore();
+            AudioSource.PlayClipAtPoint(touchSound, transform.position);
         }
         Vector3 move = direction * Time.deltaTime * speed;
         transform.position += move;
@@ -77,10 +93,10 @@ public class BallMove : MonoBehaviour
         if (collectDiamond)
         {
             GameManager.Instance.CollectDiamond();
-            //AudioSource.PlayClipAtPoint(GameManager.gameManager.jumpSound, GameManager.gameManager.player.transform.position);
-            //GameManager.gameManager.player.CollectCube();
+            AudioSource.PlayClipAtPoint(diamondSound, transform.position);
             Destroy(other.gameObject);
         }
     }
+    
 
 }

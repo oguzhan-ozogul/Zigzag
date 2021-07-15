@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private int diamondScore;
     public Text diamondText;
     public static GameManager Instance;
+
     private void Awake()
     {
         Instance = this;
@@ -25,8 +26,6 @@ public class GameManager : MonoBehaviour
     {
         diamondScore = 0;
     }
-
-
     public enum GameState
     {
         Prepare,
@@ -48,7 +47,6 @@ public class GameManager : MonoBehaviour
                     mainMenu.SetActive(false);
                     break;
                 case GameState.Gameover:
-                    
                     break;
             }
             _currentGameState = value;
@@ -60,19 +58,19 @@ public class GameManager : MonoBehaviour
         switch (CurrentGameState)
         {
             case GameState.Prepare:
-                //ballPlayer.SetActive(false);
                 break;
             case GameState.MainGame:
                 ballMove.PlayerMovement();
                 HighScore();
-                //ballPlayer.SetActive(true);
                 break;
             case GameState.Gameover:
                 gameOver.SetActive(true);
+                ballPlayer.SetActive(false);
                 break;
         }
 
     }
+    //skorun oyunda skorun artması,gözükmesi ve game overda da gözükmesi
     public void UpdateScore()
     {
         score++;
@@ -81,6 +79,7 @@ public class GameManager : MonoBehaviour
         goScoretext.text = scoreText.text;
     }
     
+    //Highscore kodu
     public void HighScore()
     {
         if (!PlayerPrefs.HasKey("HighScore"))
@@ -105,6 +104,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(scene.name);
     }
 
+    //elmaslar alındığında skora ekleme ve göstermesi
     public void CollectDiamond()
     {
         diamondScore++;
